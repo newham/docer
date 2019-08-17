@@ -21,10 +21,13 @@
                     <a href="#">取消撤销</a>
                 </div>
                 <div class="col-md-12">
-                    标题：<input v-model="article.title" type="text" id="title" @keyup.down="downTitle()">
+                    标题：<input v-model="article.title" type="text" id="title" @keyup.down="downTitle()" style="width:100%;">
                 </div>
                 <div class="col-md-12">
-                    字数统计：【<span>{{article.words}}</span>】
+                    内容：{{content}}
+                </div>
+                <div class="col-md-12">
+                    字数：<span>{{article.words}}</span>
                 </div>
             </div>
             <div class="row">
@@ -37,16 +40,16 @@
                     <div>
                         {{i+1}}.
                         <input v-model="chapter.title" type="text" v-bind:id="'c-'+i" @keyup.enter="addChapter(i)"
-                            @keyup.up="upChapter(i)" @keyup.down="downChapter(i)" @keyup.right="rightChapter(i)">
+                            @keyup.up="upChapter(i)" @keyup.down="downChapter(i)">
                         <button v-on:click="addChapter(i)">+</button>
                         <button v-on:click="delChapter(i)">x</button>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div v-for="(line,j) in chapter.lines">
-                        <input v-model="line.content" type="text" @keyup.enter="addContent(i,j)" @keyup.46="delContent(i,j)"
-                            @keyup.up="upContent(i,j)" @keyup.down="downContent(i,j)" @keyup.left="leftContent(i,j)"
-                            v-bind:id="'c-'+i+'-c-'+j">
+                        <input v-model="line.content" type="text" @keyup.enter="addContent(i,j)" @keyup.up="upContent(i,j)"
+                            @keyup.down="downContent(i,j)" v-bind:id="'c-'+i+'-c-'+j">
+                        <!-- @keyup.46="delContent(i,j)" -->
                         <button v-on:click="addContent(i,j)">+</button>
                         <button v-on:click="delContent(i,j)">x</button>
                     </div>
@@ -64,11 +67,13 @@
 </body>
 
 <script>
-    var add_chapter_index = 0, add_chapter_content_index = 0;
+    var current_chapter_index = 0, current_chapter_line_index = 0;
     var add_type = -1;
+    // var show_type = 1;
     var vm = new Vue({
         el: '#docer',
         data: {
+            content: "",
             article: {
                 titile: "",
                 words: 0,
@@ -94,14 +99,14 @@
                 //     return
                 // }
                 i++;
-                console.log(i);
+                console.log("add", i);
                 this.article.chapters.splice(i, 0, {
                     title: "",
                     lines: [
                         { content: "", translation: "" },
                     ]
                 });
-                add_chapter_index = i;
+                current_chapter_index = i;
                 add_type = 1;
             },
             delChapter: function (i) {
@@ -109,8 +114,9 @@
                     return;
                 }
                 this.article.chapters.splice(i, 1);
+                console.log("del", i);
                 //foucs up item
-                add_chapter_index = i - 1;
+                current_chapter_index = i - 1;
                 add_type = 1;
             },
             focusChapter: function (i) {
@@ -133,18 +139,18 @@
                 }
             },
             rightChapter: function (i) {
-                console.log("right", i);
+                // console.log("right", i);
                 this.focusContent(i, 0);
             },
             addContent: function (i, j) {
                 j++;
-                console.log(i, j);
+                console.log("add", i, j);
                 this.article.chapters[i].lines.splice(j, 0, {
                     content: "",
                     translation: ""
                 })
-                add_chapter_index = i;
-                add_chapter_content_index = j;
+                current_chapter_index = i;
+                current_chapter_line_index = j;
                 add_type = 2;
             },
             delContent: function (i, j) {
@@ -157,12 +163,12 @@
                 }
                 this.article.chapters[i].lines.splice(j, 1);
                 //foucs up item
-                add_chapter_index = i;
-                add_chapter_content_index = j - 1;
+                current_chapter_index = i;
+                current_chapter_line_index = j - 1;
                 add_type = 2;
             },
             upContent: function (i, j) {
-                console.log("up", i, j);
+                // console.log("up", i, j);
                 if (j >= 1) {
                     this.focusContent(i, j - 1);
                 }
@@ -172,7 +178,7 @@
 
             },
             downContent: function (i, j) {
-                console.log("down", i, j);
+                // console.log("down", i, j);
                 if (j <= this.article.chapters[i].lines.length - 2) {
                     this.focusContent(i, j + 1);
                 }
@@ -182,14 +188,21 @@
 
             },
             leftContent: function (i, j) {
-                console.log("left", i, j);
+                // console.log("left", i, j);
                 this.focusChapter(i);
             },
             focusContent: function (i, j) {
                 if (i >= 0 && j >= 0 && j < this.article.chapters[i].lines.length) {
                     document.getElementById("c-" + i + "-c-" + j).focus();
-                }
 
+                    current_chapter_index = i;
+                    current_chapter_line_index = j;
+                    this.content = this.article.chapters[i].lines[j].content;
+
+                }
+            },
+            onfocusContent: function (i, j) {
+                console.log("onfocusContent", i, j)
             },
             countWords: function () {
 
@@ -200,23 +213,29 @@
                         total += this.article.chapters[i].lines[j].content.length;
                     }
                 }
-                console.log("words", total);
+                // console.log("words", total);
                 if (this.article.words != total) {
                     this.article.words = total;
                 }
-            }
+            },
 
         },
         updated: function () {
-            console.log("updated", add_type, add_chapter_index);
+            // console.log("updated", add_type, current_chapter_index);
             if (add_type == 1) {
-                this.focusChapter(add_chapter_index);
+                this.focusChapter(current_chapter_index);
             } else if (add_type == 2) {
-                this.focusContent(add_chapter_index, add_chapter_content_index);
+                this.focusContent(current_chapter_index, current_chapter_line_index);
             }
             add_type = -1;
+
             this.countWords();
-        },
+
+            newContent = this.content = this.article.chapters[current_chapter_index].lines[current_chapter_line_index].content;
+            if (this.content != newContent) {
+                this.content = newContent;
+            }
+        }
     })
     vm.focusTitle();
 </script>
