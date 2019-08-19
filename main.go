@@ -2,9 +2,11 @@ package main
 
 import (
 	"encoding/json"
-	"github.com/newham/hamgo"
 	"io/ioutil"
 	"os"
+
+	"github.com/newham/docer/api"
+	"github.com/newham/hamgo"
 )
 
 func main() {
@@ -12,7 +14,7 @@ func main() {
 	server.Static("public")
 	server.Get("/", index)
 	server.Get("/article/=name", article)
-	server.Get("/articles", articles)
+	server.Get("/folder", folder)
 	server.Post("/article", newArticle)
 	server.RunAt("8089")
 }
@@ -89,8 +91,15 @@ func newArticle(ctx hamgo.Context) {
 		return
 	}
 
+	filepath := api.ROOT_PATH + "/" + a.File
+
+	// if api.CheckFileIsExist(filepath) {
+	// 	ctx.JSONString(400, "file existed")
+	// 	return
+	// }
+
 	b, _ := json.Marshal(a)
-	err = ioutil.WriteFile("articles/"+a.File, b, os.ModePerm)
+	err = ioutil.WriteFile(filepath, b, os.ModePerm)
 	if err != nil {
 		ctx.WriteString(err.Error())
 		ctx.Text(500)
@@ -103,6 +112,6 @@ func newMsg(code int, msg string) map[string]interface{} {
 	return map[string]interface{}{"code": code, "msg": msg}
 }
 
-func articles(ctx hamgo.Context) {
-
+func folder(ctx hamgo.Context) {
+	ctx.JSONFrom(200, api.GetFolder("/"))
 }
