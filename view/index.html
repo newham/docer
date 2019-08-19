@@ -4,90 +4,236 @@
 <head>
     <meta charset="utf-8">
     <title>docer</title>
-    <script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>
+    <link rel="icon" href="/public/docer_logo.ico" type="image/x-icon"/>
+
     <!-- <link href="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/css/bootstrap.css" rel="stylesheet"> -->
-    <link href="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/css/bootstrap-grid.min.css" rel="stylesheet">
-    <link href="docer.css" rel="stylesheet" />
+    <!-- <link href="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/css/bootstrap-grid.min.css" rel="stylesheet"> -->
+    <link href="https://cdn.bootcss.com/twitter-bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/public/docer.css" rel="stylesheet"/>
+
+    <script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/twitter-bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+
 </head>
 
 <body>
 
-    <div id="docer">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <a href="#">保存</a>
-                    <a href="#">撤销</a>
-                    <a href="#">取消撤销</a>
+
+<div id="docer">
+    <!--modal start-->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title" id="myModalLabel">另存为</h4>
                 </div>
-                <div class="col-md-12">
-                    标题：<input v-model="article.title" type="text" id="title" @keyup.down="downTitle()" style="width:100%;">
+                <div class="modal-body">
+                    <input type="text" class="form-control" v-model="article.file">
                 </div>
-                <div class="col-md-12">
-                    内容：{{content}}
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" v-on:click="postArticle()">保存</button>
                 </div>
-                <div class="col-md-12">
-                    字数：<span>{{article.words}}</span>
-                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+    <!--modal end-->
+    <div class="tool-bar navbar-fixed-top">
+        <div class="title text-center">
+            <div class="logo">
+                <a class="pull-left" href="/">DOCER</a>
             </div>
-            <div class="row">
-                <div class="col-md-4">章节</div>
-                <div class="col-md-4">正文</div>
-                <div class="col-md-4">翻译</div>
+            <span>${article.file}</span>
+        </div>
+        <div class="row" style="background: #efefef;padding: 5px 15px;">
+            <div class="col-md-9 col-xs-6">
+                <button type="button" class="btn btn-default btn-sm" v-on:click="newArticle()">
+                    <span class="glyphicon glyphicon-file"></span>
+                </button>
+                <button type="button" class="btn btn-default btn-sm" v-on:click="getArticle('default.json')">
+                    <span class="glyphicon glyphicon-folder-open"></span>
+                </button>
+                <button type="button" class="btn btn-default btn-sm" v-on:click="postArticle()">
+                    <span class="glyphicon glyphicon-floppy-disk"></span>
+                </button>
+                <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#myModal">
+                    另存为
+                </button>
+                <button type="button" class="btn btn-default btn-sm">
+                    预览
+                </button>
+                <button type="button" class="btn btn-default btn-sm">
+                    打开
+                </button>
+
+                {{/*                <button type="button" class="btn btn-default btn-sm">*/}}
+                {{/*                    <span class="glyphicon glyphicon-arrow-left"></span>*/}}
+                {{/*                </button>*/}}
+                {{/*                <button type="button" class="btn btn-default btn-sm">*/}}
+                {{/*                    <span class="glyphicon glyphicon-arrow-right"></span>*/}}
+                {{/*                </button>*/}}
+
             </div>
-            <div class="row" v-for="(chapter,i) in article.chapters">
-                <div class="col-md-4">
-                    <div>
-                        {{i+1}}.
-                        <input v-model="chapter.title" type="text" v-bind:id="'c-'+i" @keyup.enter="addChapter(i)"
-                            @keyup.up="upChapter(i)" @keyup.down="downChapter(i)">
-                        <button v-on:click="addChapter(i)">+</button>
-                        <button v-on:click="delChapter(i)">x</button>
-                    </div>
+
+            <div class="col-md-3 col-xs-6">
+                <div class="input-group input-group-sm ">
+                    <input type="text" class="form-control">
+                    <span class="input-group-btn ">
+                    <button class="btn btn-success" type="button">搜索</button>
+                </span>
                 </div>
-                <div class="col-md-4">
-                    <div v-for="(line,j) in chapter.lines">
-                        <input v-model="line.content" type="text" @keyup.enter="addContent(i,j)" @keyup.up="upContent(i,j)"
-                            @keyup.down="downContent(i,j)" v-bind:id="'c-'+i+'-c-'+j">
-                        <!-- @keyup.46="delContent(i,j)" -->
-                        <button v-on:click="addContent(i,j)">+</button>
-                        <button v-on:click="delContent(i,j)">x</button>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div v-for="line in chapter.lines">
-                        <input v-model="line.translation" type="text">
-                    </div>
-                </div>
-                <!-- <div class="col-md-12">
-                    <hr>
-                </div> -->
             </div>
         </div>
+    </div>
+
+    <div class="container-fluid" style="margin-bottom: 30px;margin-top: 75px;">
+        <div class="row border-bottom">
+            <div class="col-md-12">
+                <h3>标题</h3>
+                <input v-model="article.title" type="text" id="title" @keyup.down="downTitle()"
+                       class="form-control p-3">
+            </div>
+            <!--<div class="col-md-12">
+                <div class="input-group input-group-sm p-3">
+                    <span class="input-group-addon">输入：</span>
+                    <input v-model="content" type="text" id="title" @keyup.down="downTitle()" class="form-control">
+                </div>
+
+            </div>-->
+
+        </div>
+        <div class="row border-bottom">
+            <div class="col-xs-3">
+                <h3>章节</h3>
+            </div>
+            <div class="col-xs-6">
+                <h3>正文</h3>
+            </div>
+            <div class="col-xs-3">
+                <h3>引用</h3>
+            </div>
+        </div>
+        <div class="row ">
+            <div class="col-xs-9">
+                <div class="row chapter" v-for="(chapter,i) in article.chapters">
+                    <div class="col-xs-4">
+                        <div class="input-group input-group-sm p-2">
+                    <span class="input-group-addon">
+                    <select v-model="chapter.level">
+                        <option value=1>1</option>
+                        <option value=2>2</option>
+                        <option value=3>3</option>
+                        <option value=4>4</option>
+                        <option value=5>5</option>
+                    </select>
+                        级
+                    </span>
+
+                            <input v-model="chapter.title" type="text" v-bind:id="'c-'+i" @keyup.enter="addChapter(i)"
+                                   @keyup.up="upChapter(i)" @keyup.down="downChapter(i)" @keyup.right="rightChapter(i)"
+                                   class="form-control">
+                            <span class="input-group-btn">
+                            <button v-on:click="addChapter(i)" class="btn btn-default">+</button>
+                            <button v-on:click="delChapter(i)" class="btn btn-default">x</button>
+                        </span>
+                        </div>
+                    </div>
+                    <div class="col-xs-8">
+                        <div v-for="(line,j) in chapter.lines" class="input-group input-group-sm p-2">
+                            {{/*                    <span class="input-group-addon">${j+1}</span>*/}}
+                            <input v-model="line.content" type="text" @keyup.enter="addContent(i,j)"
+                                   class="form-control"
+                                   @keyup.up="upContent(i,j)" @keyup.down="downContent(i,j)" @keyup.46="delContent(i,j)"
+                                   @keyup.right="focusReference(0)" @keyup.left="focusChapter(i)"
+                                   v-bind:id="'c-'+i+'-c-'+j">
+                            <!-- @keyup.46="delContent(i,j)" -->
+                            <span class="input-group-btn">
+                                <span class="btn btn-default">
+                                    <select v-model="line.reference">
+                                        <option value="-1">无</option>
+                                        <option v-bind:value="reference.id" v-for="(reference,n) in article.references"
+                                                data-toggle="tooltip" v-bind:title="reference.text">[${n+1}]</option>
+                                    </select>
+                                </span>
+                                <button v-on:click="addContent(i,j)" class="btn btn-default">+</button>
+                                <button v-on:click="delContent(i,j)" class="btn btn-default">x</button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-3 ">
+                <div class="row references">
+                    <div class="col-lg-12">
+                        <div class="input-group input-group-sm p-2" v-for="(r,k) in article.references">
+                            <span class="input-group-addon">[${k+1}]</span>
+                            <input v-model="r.text" v-bind:id="'r-'+k" type="text" class="form-control"
+                                   @keyup.enter="addReference(k)" @keyup.down="focusReference(k+1)"
+                                   @keyup.up="focusReference(k-1)" @keyup.left="focusContent(0,0)">
+                            <span class="input-group-btn">
+                        <button v-on:click="addReference(k)" class="btn btn-default">+</button>
+                        <button v-on:click="delReference(k)" class="btn btn-default">x</button>
+                    </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <footer class="navbar-fixed-bottom text-right">
+
+        行数:<span>${article.lines}</span> 字数:<span>${article.words}</span>
+
+    </footer>
+</div>
 </body>
 
 <script>
-    var current_chapter_index = 0, current_chapter_line_index = 0;
+    var current_chapter_index = 0, current_chapter_line_index = 0, current_reference_index = 0;
     var add_type = -1;
     // var show_type = 1;
     var vm = new Vue({
+        delimiters: ['${', '}'],
         el: '#docer',
         data: {
             content: "",
-            article: {
-                titile: "",
-                words: 0,
-                chapters: [
-                    {
-                        title: "",
-                        lines: [
-                            { content: "", translation: "" },
-                        ]
-                    }
-                ],
-            }
+            article: {}
         },
         methods: {
+            newArticle: function () {
+                this.article = {
+                    file: "new.json",
+                    title: "",
+                    words: 0,
+                    lines: 0,
+                    chapters: [
+                        {
+                            level: 1,
+                            title: "",
+                            lines: [
+                                {
+                                    content: "",
+                                    translation: "",
+                                    reference: -1
+                                },
+                            ]
+                        }
+                    ],
+                    references: [
+                        {
+                            id: (new Date()).valueOf(),
+                            text: ""
+                        }
+                    ]
+                }
+            },
             focusTitle: function (i) {
                 document.getElementById("title").focus();
             },
@@ -102,8 +248,9 @@
                 console.log("add", i);
                 this.article.chapters.splice(i, 0, {
                     title: "",
+                    level: 1,
                     lines: [
-                        { content: "", translation: "" },
+                        {content: "", translation: "", reference: -1},
                     ]
                 });
                 current_chapter_index = i;
@@ -147,7 +294,8 @@
                 console.log("add", i, j);
                 this.article.chapters[i].lines.splice(j, 0, {
                     content: "",
-                    translation: ""
+                    translation: "",
+                    reference: this.article.chapters[i].lines[j - 1].reference
                 })
                 current_chapter_index = i;
                 current_chapter_line_index = j;
@@ -204,20 +352,76 @@
             onfocusContent: function (i, j) {
                 console.log("onfocusContent", i, j)
             },
-            countWords: function () {
-
-                var total = 0;
+            addReference: function (i) {
+                i++;
+                console.log("add reference", i);
+                this.article.references.splice(i, 0, {id: (new Date()).valueOf(), text: ""})
+                //focus
+                current_reference_index = i;
+                add_type = 3;
+            },
+            delReference: function (i) {
+                if (this.article.references.length == 1) {
+                    return
+                }
+                console.log("del reference", i);
+                this.article.references.splice(i, 1)
+            },
+            focusReference: function (i) {
+                if (i < this.article.references.length && i >= 0) {
+                    document.getElementById("r-" + i).focus();
+                }
+            },
+            setFooter: function () {
+                var words = 0;
+                var lines = 0;
                 for (i = 0; i < this.article.chapters.length; i++) {
-                    total += this.article.chapters[i].title.length;
+                    words += this.article.chapters[i].title.length;
                     for (j = 0; j < this.article.chapters[i].lines.length; j++) {
-                        total += this.article.chapters[i].lines[j].content.length;
+                        words += this.article.chapters[i].lines[j].content.length;
+                        if (this.article.chapters[i].lines[j].content != "") {
+                            lines++;
+                        }
                     }
                 }
                 // console.log("words", total);
-                if (this.article.words != total) {
-                    this.article.words = total;
+                if (this.article.words != words) {
+                    this.article.words = words;
+                }
+                if (this.article.lines != lines) {
+                    this.article.lines = lines;
                 }
             },
+            postArticle: function () {
+                console.log("save",this.article.file);
+                $('#myModal').modal('hide')
+                // return
+                axios.post('/article', this.article, {
+                    headers:
+                        {
+                            'Content-Type': 'application/json'
+                        }
+                })
+                    .then(function (response) {
+                        console.log(response);
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+
+
+            },
+            getArticle: function (name) {
+                axios.get('/article/' + name)
+                    .then(function (response) {
+                        // console.log(response.data.title);
+                        // console.log(response.status);
+                        // console.log(response.statusText);
+                        // console.log(response.headers);
+                        // console.log(response.config);
+                        vm.article = response.data; // 这里不能用this，否则无法跟新
+                    });
+            }
 
         },
         updated: function () {
@@ -226,17 +430,20 @@
                 this.focusChapter(current_chapter_index);
             } else if (add_type == 2) {
                 this.focusContent(current_chapter_index, current_chapter_line_index);
+            } else if (add_type == 3) {
+                this.focusReference(current_reference_index);
             }
             add_type = -1;
 
-            this.countWords();
+            this.setFooter();
 
-            newContent = this.content = this.article.chapters[current_chapter_index].lines[current_chapter_line_index].content;
+            newContent = this.article.chapters[current_chapter_index].lines[current_chapter_line_index].content;
             if (this.content != newContent) {
                 this.content = newContent;
             }
         }
     })
+    vm.newArticle();
     vm.focusTitle();
 </script>
 
