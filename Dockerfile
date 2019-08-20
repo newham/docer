@@ -5,6 +5,7 @@ FROM debian:latest
 COPY view/ /docer/view/
 COPY docer /docer/docer
 COPY public/ /docer/public/
+COPY USER /docer/USER
 
 EXPOSE 8089
 
