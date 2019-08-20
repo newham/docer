@@ -11,7 +11,10 @@
 }
 
 .tool-bar {
-    border-bottom: 1px solid #aaa;
+    background: #efefef;
+    padding: 5px 15px;
+    border-bottom: 1px solid #e3e3e3;
+    border-top: 1px solid #e3e3e3;
 }
 
 footer {
@@ -45,15 +48,33 @@ select:hover {
     cursor: pointer;
 }
 
+.body-dark {
+    background: #efefef;
+}
+
 .title {
-    border-bottom: 1px solid #333;
-    border-top: 1px solid #000;
-    background: RoyalBlue;
-    color: white;
-    height: 33px;
-    padding: 5px 50px 5px 15px;
-    font-size: 14px;
-    line-height: 1.5;
+    /*border-bottom: 1px solid #e3e3e3;*/
+    /*border-top: 1px solid #000;*/
+    background: #ffff;
+    color: black;
+    height: 60px;
+    /*padding: 5px 50px 5px 15px;*/
+    /*font-size: 14px;*/
+    /*line-height: 1.5;*/
+}
+
+.title-txt {
+    padding-top: 35px;
+    padding-right: 10px;
+}
+
+.title-menu {
+    padding-left: 10px;
+    margin: 0px;
+}
+
+.title-menu a {
+    color: black;
 }
 
 button {
@@ -72,8 +93,19 @@ span {
     border-radius: 0px !important;
 }
 
+.logo {
+    height: 60px;
+    background: RoyalBlue;
+    padding: 33px 5px 0px 3px;
+}
+
 .logo a {
+    font-weight: bold;
     color: white;
+}
+
+.logo img {
+    height: 100%;
 }
 
 .form-control {
@@ -95,7 +127,7 @@ a {
 }
 
 .card:hover {
-    background: #efefef;
+    background: #e3e3e3;
     cursor: pointer !important;
 }
 
@@ -105,7 +137,7 @@ a {
 
 .content {
     margin-bottom: 30px;
-    margin-top: 75px;
+    margin-top: 105px;
 }
 
 .filename {
@@ -121,7 +153,7 @@ a {
 }
 
 .affix {
-    top: 80px;
+    top: 107px;
 }
 
 .affix-top {
@@ -139,4 +171,8 @@ a {
     overflow-y: scroll !important;
     min-height: 200px;
     max-height: 800px
+}
+
+.btn-primary {
+    background: royalblue !important;
 }

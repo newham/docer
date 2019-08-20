@@ -111,15 +111,22 @@
         </div><!-- /.modal-dialog -->
     </div>
     <!--modal end-->
-    <div class="tool-bar navbar-fixed-top">
+    <div class="navbar-fixed-top">
         <div class="title text-center">
-            <div class="logo">
-                <a class="pull-left" href="/">DOCER</a>
+            <div class="logo pull-left">
+                <a href="/">
+                    Docer
+                </a>
             </div>
-            <span>${article.file}</span>
-            <span>${isEdited}</span>
+            <div class="title-txt">
+                <span class="pull-left title-menu">
+                    <label><a>帮助</a></label>
+                    <label><a>关于</a></label>
+                </span>
+                <label>${article.file} ${isEdited}</label>
+            </div>
         </div>
-        <div class="row" style="background: #efefef;padding: 5px 15px;">
+        <div class="row tool-bar">
             <div class="col-md-9 col-xs-6">
                 <a type="button" class="btn btn-default btn-sm" href="/">
                     <span class="glyphicon glyphicon-home"></span>
@@ -149,7 +156,7 @@
                 <div class="input-group input-group-sm ">
                     <input type="text" class="form-control">
                     <span class="input-group-btn ">
-                            <button class="btn btn-success" type="button">搜索</button>
+                            <button class="btn btn-primary" type="button">搜索</button>
                         </span>
                 </div>
             </div>
