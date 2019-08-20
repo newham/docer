@@ -18,7 +18,7 @@ func main() {
 		ctx.GetSession()
 		if ctx.GetSession().Get(SESSION_NAME) == nil {
 			if ctx.Method() == http.MethodGet {
-				ctx.HTML("view/login.html")
+				Html(ctx, "view/login.html")
 			} else {
 				ctx.JSONString(403, "403")
 			}
@@ -44,7 +44,7 @@ const (
 )
 
 func index(ctx hamgo.Context) {
-	ctx.HTML("view/index.html")
+	Html(ctx, "view/index.html")
 }
 
 func download(ctx hamgo.Context) {
@@ -99,7 +99,7 @@ func edit(ctx hamgo.Context) {
 	}
 	ctx.PutData("filename", name)
 	ctx.PutData("create", create)
-	ctx.HTML("view/doc.html")
+	Html(ctx, "view/doc.html")
 }
 
 /**
@@ -220,4 +220,8 @@ func logout(ctx hamgo.Context) {
 	//ctx.GetSession().Delete(SESSION_NAME)
 	ctx.DeleteSession()
 	ctx.JSONString(200, "")
+}
+
+func Html(ctx hamgo.Context, html string) {
+	ctx.HTML(html, "view/head.html", "view/title.html", "view/tool.html")
 }

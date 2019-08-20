@@ -1,0 +1,5 @@
+articles/
+.idea/
+*.log
+docer
+docer.exe
