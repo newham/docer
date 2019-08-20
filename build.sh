@@ -9,7 +9,7 @@ echo "build"
 #cd ../
 #go build --ldflags "-extldflags -static"
 #go build --ldflags '-extldflags "-static -lstdc++ -lpthread"'
-go build main.go
+go build
 #cd docker
 
 #mkdir copy
