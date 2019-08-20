@@ -26,11 +26,11 @@ footer {
     border-right: 1px dashed #e3e3e3;
 }
 
-.references {
-    padding: 5px 0px 0px 0px;
-    border-bottom: 1px dashed #e3e3e3;
-    border-left: 1px dashed #e3e3e3;
-}
+/*.references {*/
+/*    padding: 5px 0px 0px 0px;*/
+/*    border-bottom: 1px dashed #e3e3e3;*/
+/*    border-left: 1px dashed #e3e3e3;*/
+/*}*/
 
 .border-bottom {
     border-bottom: 1px solid #e3e3e3;
@@ -118,4 +118,25 @@ a {
 .btn-select {
     padding-right: 0px !important;
     padding-left: 0px !important;
+}
+
+.affix {
+    top: 80px;
+}
+
+.affix-top {
+    top: 5px;
+    position: absolute;
+}
+
+.affix-bottom {
+    bottom: 200px;
+    position: absolute;
+}
+
+.references {
+    padding-right: 15px;
+    overflow-y: scroll !important;
+    min-height: 200px;
+    max-height: 800px
 }
