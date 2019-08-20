@@ -147,11 +147,6 @@
             showArticles: function () {
                 axios.get('/folder')
                     .then(function (response) {
-                        // console.log(response.data.title);
-                        // console.log(response.status);
-                        // console.log(response.statusText);
-                        // console.log(response.headers);
-                        // console.log(response.config);
                         vm.folder = response.data; // 这里不能用this，否则无法跟新
                     });
                 $('#folderModal').modal('show');
@@ -168,14 +163,10 @@
                 }
                 axios.delete('/article/' + name)
                     .then(function (response) {
-                        // console.log(response.data.title);
-                        // console.log(response.status);
-                        // console.log(response.statusText);
-                        // console.log(response.headers);
-                        // console.log(response.config);
-                        vm.folder = response.data; // 这里不能用this，否则无法跟新
+                        vm.showArticles();
+                    }).catch(function (error) {
+                        alert("删除失败");
                     });
-                this.showArticles();
             },
             logout: function () {
                 axios.post('/logout')
@@ -183,7 +174,7 @@
                         window.location.href = "/";
                     }).catch(function (error) {
                         window.location.href = "/";
-                });
+                    });
             }
         }
     })
