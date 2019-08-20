@@ -227,7 +227,7 @@
                             <span class="input-group-btn">
                                     <span class="btn btn-default">
                                         <select v-model="line.reference">
-                                            <option value="-1">无</option>
+                                            <option v-bind:value="-1">无</option>
                                             <option v-bind:value="reference.id"
                                                     v-for="(reference,n) in article.references" data-toggle="tooltip"
                                                     v-bind:title="reference.text">[${n+1}]</option>
@@ -284,7 +284,7 @@
         },
         methods: {
             newArticle: function (name) {
-                if(name==""){
+                if (name == "") {
                     alert("file name is null");
                     return
                 }
@@ -453,6 +453,9 @@
                 }
             },
             setFooter: function () {
+                if (this.article == null || this.article.chapters == null) {
+                    return
+                }
                 var words = 0;
                 var lines = 0;
                 for (i = 0; i < this.article.chapters.length; i++) {
@@ -494,13 +497,17 @@
                 axios.get('/article/' + name)
                     .then(function (response) {
                         // console.log(response.data.title);
-                        // console.log(response.status);
+                        console.log(response.status);
                         // console.log(response.statusText);
                         // console.log(response.headers);
                         // console.log(response.config);
                         vm.article = response.data; // 这里不能用this，否则无法跟新
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                        alert("打开文件错误");
+                        window.location.href="/";
                     });
-                $('#folderModal').modal('hide');
             },
             showArticles: function () {
                 axios.get('/folder')
@@ -535,10 +542,10 @@
 
             this.setFooter();
 
-            newContent = this.article.chapters[current_chapter_index].lines[current_chapter_line_index].content;
-            if (this.content != newContent) {
-                this.content = newContent;
-            }
+            // newContent = this.article.chapters[current_chapter_index].lines[current_chapter_line_index].content;
+            // if (this.content != newContent) {
+            //     this.content = newContent;
+            // }
         }
     })
     var create = {{.create}};

@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -15,14 +16,29 @@ func main() {
 	server.Static("public")
 	server.Get("/", index)
 	server.Handler("/article/=name", article, "GET,DELETE")
+	server.Get("/download/=name", download)
 	server.Get("/edit/=name", edit)
 	server.Get("/folder", folder)
 	server.Post("/article", newArticle)
+	server.Post("/upload", upload)
 	server.RunAt("8089")
 }
 
 func index(ctx hamgo.Context) {
 	ctx.HTML("view/index.html")
+}
+
+func download(ctx hamgo.Context) {
+	name := ctx.PathParam("name")
+
+	filepath := "articles/" + name
+	if !api.CheckFileIsExist(filepath) {
+		ctx.JSONString(404, "file not existed")
+		return
+	}
+
+	ctx.Attachment(filepath)
+	return
 }
 
 func article(ctx hamgo.Context) {
@@ -31,6 +47,11 @@ func article(ctx hamgo.Context) {
 		b, err := ioutil.ReadFile("articles/" + name)
 		if err != nil {
 			ctx.JSONFrom(404, newMsg(404, ""))
+			return
+		}
+		a := Article{}
+		if json.Unmarshal(b, &a) != nil {
+			ctx.JSONFrom(400, newMsg(400, "打开文件错误，请检查文件格式"))
 			return
 		}
 		ctx.JSON(200, b)
@@ -112,6 +133,7 @@ type Reference struct {
 }
 
 func newArticle(ctx hamgo.Context) {
+
 	a := Article{}
 	err := ctx.BindJSON(&a)
 	if err != nil {
@@ -143,4 +165,23 @@ func newMsg(code int, msg string) map[string]interface{} {
 
 func folder(ctx hamgo.Context) {
 	ctx.JSONFrom(200, api.GetFolder("/"))
+}
+
+func upload(ctx hamgo.Context) {
+	file, fileHeader, err := ctx.FormFile("file")
+	defer file.Close()
+	if err != nil {
+		ctx.JSONString(500, err.Error())
+		return
+	}
+	//2.create local file
+	f, err := os.OpenFile(api.ROOT_PATH+"/"+fileHeader.Filename, os.O_WRONLY|os.O_CREATE, 0777)
+	defer f.Close()
+	if err != nil {
+		ctx.JSONString(500, err.Error())
+		return
+	}
+	//3.copy uploadfile to localfile
+	io.Copy(f, file)
+	ctx.Redirect("/")
 }
