@@ -73,7 +73,8 @@
                 <a class="pull-left" href="/">DOCER</a>
             </div>
             <div>
-                <p>欢迎来到Docer，Docer是一个帮助你快速撰写论文的工具。</p>
+                欢迎来到Docer，Docer是一个帮助你快速撰写论文的工具。
+                <a v-on:click="logout()" class="pull-right" style="color:white;">注销</a>
             </div>
         </div>
     </div>
@@ -175,6 +176,14 @@
                         vm.folder = response.data; // 这里不能用this，否则无法跟新
                     });
                 this.showArticles();
+            },
+            logout: function () {
+                axios.post('/logout')
+                    .then(function (response) {
+                        window.location.href = "/";
+                    }).catch(function (error) {
+                        window.location.href = "/";
+                });
             }
         }
     })

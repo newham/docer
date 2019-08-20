@@ -6,13 +6,26 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/newham/docer/api"
 	"github.com/newham/hamgo"
 )
 
 func main() {
-	server := hamgo.New(hamgo.Properties{})
+	server := hamgo.New(hamgo.Properties{SessionMaxLifeTime: 3600 * 24})
+	server.AddFilter(func(ctx hamgo.Context) bool {
+		ctx.GetSession()
+		if ctx.GetSession().Get(SESSION_NAME) == nil {
+			if ctx.Method() == http.MethodGet {
+				ctx.HTML("view/login.html")
+			} else {
+				ctx.JSONString(403, "403")
+			}
+			return false
+		}
+		return true
+	}).AddAnnoURL("/login", "POST")
 	server.Static("public")
 	server.Get("/", index)
 	server.Handler("/article/=name", article, "GET,DELETE")
@@ -21,8 +34,14 @@ func main() {
 	server.Get("/folder", folder)
 	server.Post("/article", newArticle)
 	server.Post("/upload", upload)
+	server.Post("/login", login)
+	server.Post("/logout", logout)
 	server.RunAt("8089")
 }
+
+const (
+	SESSION_NAME = "username"
+)
 
 func index(ctx hamgo.Context) {
 	ctx.HTML("view/index.html")
@@ -184,4 +203,21 @@ func upload(ctx hamgo.Context) {
 	//3.copy uploadfile to localfile
 	io.Copy(f, file)
 	ctx.Redirect("/")
+}
+
+func login(ctx hamgo.Context) {
+	username := ctx.FormValue("username")
+	pwd := ctx.FormValue("pwd")
+	b, err := ioutil.ReadFile("USER")
+	//println(string(b),api.Base64Encode(username+","+pwd))
+	if err == nil && b != nil && strings.Contains(string(b), api.Base64Encode(username+","+pwd)) {
+		ctx.GetSession().Set(SESSION_NAME, username)
+	}
+	ctx.Redirect("/")
+}
+
+func logout(ctx hamgo.Context) {
+	//ctx.GetSession().Delete(SESSION_NAME)
+	ctx.DeleteSession()
+	ctx.JSONString(200, "")
 }
