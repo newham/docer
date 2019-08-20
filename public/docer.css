@@ -11,8 +11,6 @@
 }
 
 .tool-bar {
-    background: RoyalBlue;
-    color: white;
     border-bottom: 1px solid #aaa;
 }
 
@@ -28,7 +26,7 @@ footer {
     border-right: 1px dashed #e3e3e3;
 }
 
-.references{
+.references {
     padding: 5px 0px 0px 0px;
     border-bottom: 1px dashed #e3e3e3;
     border-left: 1px dashed #e3e3e3;
@@ -48,9 +46,14 @@ select:hover {
 }
 
 .title {
-    padding: 6px 15px;
     border-bottom: 1px solid #333;
     border-top: 1px solid #000;
+    background: RoyalBlue;
+    color: white;
+    height: 33px;
+    padding: 5px 10px;
+    font-size: 14px;
+    line-height: 1.5;
 }
 
 button {
@@ -69,13 +72,38 @@ span {
     border-radius: 0px !important;
 }
 
-.logo a{
+.logo a {
     color: white;
 }
 
-.form-control{
+.form-control {
     height: 30px;
     padding: 5px 10px;
     font-size: 12px;
     line-height: 1.5;
+}
+
+a {
+    cursor: pointer !important;
+}
+
+.card {
+    /*border: 1px solid #333;*/
+    padding: 10px;
+    text-align: center;
+
+}
+
+.card:hover {
+    background: #efefef;
+    cursor: pointer !important;
+}
+
+.card a {
+    color: black !important;
+}
+
+.content {
+    margin-bottom: 30px;
+    margin-top: 75px;
 }

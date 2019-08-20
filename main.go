@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"io/ioutil"
+	"net/http"
 	"os"
 
 	"github.com/newham/docer/api"
@@ -13,7 +14,8 @@ func main() {
 	server := hamgo.New(hamgo.Properties{})
 	server.Static("public")
 	server.Get("/", index)
-	server.Get("/article/=name", article)
+	server.Handler("/article/=name", article, "GET,DELETE")
+	server.Get("/edit/=name", edit)
 	server.Get("/folder", folder)
 	server.Post("/article", newArticle)
 	server.RunAt("8089")
@@ -25,12 +27,39 @@ func index(ctx hamgo.Context) {
 
 func article(ctx hamgo.Context) {
 	name := ctx.PathParam("name")
-	b, err := ioutil.ReadFile("articles/" + name)
-	if err != nil {
-		ctx.JSONFrom(404, newMsg(404, ""))
+	if ctx.Method() == http.MethodGet {
+		b, err := ioutil.ReadFile("articles/" + name)
+		if err != nil {
+			ctx.JSONFrom(404, newMsg(404, ""))
+			return
+		}
+		ctx.JSON(200, b)
+	} else if ctx.Method() == http.MethodDelete {
+		err := os.Remove("articles/" + name)
+		if err != nil {
+			ctx.JSONFrom(500, newMsg(500, err.Error()))
+			return
+		}
+		ctx.JSON(200, nil)
+	}
+
+}
+
+func edit(ctx hamgo.Context) {
+	create := 0
+	if ctx.FormValue("create") != "" {
+		create = 1
+	}
+	name := ctx.PathParam("name")
+
+	if create != 1 && !api.CheckFileIsExist(api.ROOT_PATH+"/"+name) {
+		ctx.WriteString("404")
+		ctx.Text(404)
 		return
 	}
-	ctx.JSON(200, b)
+	ctx.PutData("filename", name)
+	ctx.PutData("create", create)
+	ctx.HTML("view/doc.html")
 }
 
 /**
