@@ -175,7 +175,7 @@ func upload(ctx hamgo.Context) {
 		return
 	}
 	//2.create local file
-	f, err := os.OpenFile(api.ROOT_PATH+"/"+fileHeader.Filename, os.O_WRONLY|os.O_CREATE, 0777)
+	f, err := os.OpenFile(api.ROOT_PATH+"/"+fileHeader.Filename, os.O_WRONLY|os.O_CREATE, 0666)
 	defer f.Close()
 	if err != nil {
 		ctx.JSONString(500, err.Error())
