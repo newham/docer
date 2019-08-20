@@ -108,9 +108,14 @@ a {
     margin-top: 75px;
 }
 
-.filename{
+.filename {
     /*height: 20px;*/
-    overflow: hidden;/*超出部分隐藏*/
+    overflow: hidden; /*超出部分隐藏*/
     /*white-space: nowrap;!*不换行*!*/
-    text-overflow:ellipsis;/*超出部分文字以...显示*/
+    text-overflow: ellipsis; /*超出部分文字以...显示*/
+}
+
+.btn-select {
+    padding-right: 0px !important;
+    padding-left: 0px !important;
 }

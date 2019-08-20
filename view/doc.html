@@ -196,36 +196,43 @@
                 <div class="row chapter" v-for="(chapter,i) in article.chapters">
                     <div class="col-xs-12 col-md-4">
                         <div class="input-group input-group-sm p-2">
-                                <span class="input-group-addon">
+                                <span class="input-group-addon ">
                                     <select v-model="chapter.level">
-                                        <option value=1>1</option>
-                                        <option value=2>2</option>
-                                        <option value=3>3</option>
-                                        <option value=4>4</option>
-                                        <option value=5>5</option>
+                                        <option v-bind:value="1">1</option>
+                                        <option v-bind:value="2">2</option>
+                                        <option v-bind:value="3">3</option>
+                                        <option v-bind:value="4">4</option>
+                                        <option v-bind:value="5">5</option>
                                     </select>
                                     级
                                 </span>
 
                             <input v-model="chapter.title" type="text" v-bind:id="'c-'+i"
-                                   @keyup.enter="addChapter(i)" @keyup.up="upChapter(i)" @keyup.down="downChapter(i)"
+                                   @keyup.enter="addChapter(i,1)" @keyup.up="upChapter(i)" @keyup.down="downChapter(i)"
                                    @keyup.right="rightChapter(i)" class="form-control">
                             <span class="input-group-btn">
-                                    <button v-on:click="addChapter(i)" class="btn btn-default">+</button>
-                                    <button v-on:click="delChapter(i)" class="btn btn-default">x</button>
+                                    <button v-on:click="addChapter(i,0)" class="btn btn-default">
+                                        <span class="glyphicon glyphicon-chevron-up"></span>
+                                    </button>
+                                    <button v-on:click="addChapter(i,1)" class="btn btn-default">
+                                        <span class="glyphicon glyphicon-chevron-down"></span>
+                                    </button>
+                                    <button v-on:click="delChapter(i)" class="btn btn-default">
+                                        <span class="glyphicon glyphicon-remove"></span>
+                                    </button>
                                 </span>
                         </div>
                     </div>
                     <div class="col-xs-12 col-md-8">
                         <div v-for="(line,j) in chapter.lines" class="input-group input-group-sm p-2">
                             {{/*                    <span class="input-group-addon">${j+1}</span>*/}}
-                            <input v-model="line.content" type="text" @keyup.enter="addContent(i,j)"
+                            <input v-model="line.content" type="text" @keyup.enter="addContent(i,j,1)"
                                    class="form-control" @keyup.up="upContent(i,j)" @keyup.down="downContent(i,j)"
                                    @keyup.46="delContent(i,j)" @keyup.right="focusReference(0)"
                                    @keyup.left="focusChapter(i)" v-bind:id="'c-'+i+'-c-'+j">
                             <!-- @keyup.46="delContent(i,j)" -->
                             <span class="input-group-btn">
-                                    <span class="btn btn-default">
+                                    <span class="btn btn-default btn-select">
                                         <select v-model="line.reference">
                                             <option v-bind:value="-1">无</option>
                                             <option v-bind:value="reference.id"
@@ -233,8 +240,15 @@
                                                     v-bind:title="reference.text">[${n+1}]</option>
                                         </select>
                                     </span>
-                                    <button v-on:click="addContent(i,j)" class="btn btn-default">+</button>
-                                    <button v-on:click="delContent(i,j)" class="btn btn-default">x</button>
+                                    <button v-on:click="addContent(i,j,0)" class="btn btn-default">
+                                        <span class="glyphicon glyphicon-chevron-up"></span>
+                                    </button>
+                                    <button v-on:click="addContent(i,j,1)" class="btn btn-default">
+                                        <span class="glyphicon glyphicon-chevron-down"></span>
+                                    </button>
+                                    <button v-on:click="delContent(i,j)" class="btn btn-default">
+                                        <span class="glyphicon glyphicon-remove"></span>
+                                    </button>
                                 </span>
                         </div>
                     </div>
@@ -249,8 +263,12 @@
                                    @keyup.enter="addReference(k)" @keyup.down="focusReference(k+1)"
                                    @keyup.up="focusReference(k-1)" @keyup.left="focusContent(0,0)">
                             <span class="input-group-btn">
-                                    <button v-on:click="addReference(k)" class="btn btn-default">+</button>
-                                    <button v-on:click="delReference(k)" class="btn btn-default">x</button>
+                                    <button v-on:click="addReference(k)" class="btn btn-default">
+                                        <span class="glyphicon glyphicon-plus"></span>
+                                    </button>
+                                    <button v-on:click="delReference(k)" class="btn btn-default">
+                                        <span class="glyphicon glyphicon-remove"></span>
+                                    </button>
                                 </span>
                         </div>
                     </div>
@@ -320,11 +338,11 @@
             downTitle: function (i) {
                 this.focusChapter(0);
             },
-            addChapter: function (i) {
+            addChapter: function (i, step) {
                 // if(this.article.chapters[i].title==""){ //本行为空，禁止增加新行
                 //     return
                 // }
-                i++;
+                i += step;
                 console.log("add", i);
                 this.article.chapters.splice(i, 0, {
                     title: "",
@@ -369,13 +387,13 @@
                 // console.log("right", i);
                 this.focusContent(i, 0);
             },
-            addContent: function (i, j) {
-                j++;
+            addContent: function (i, j, step) {
+                j += step;
                 console.log("add", i, j);
                 this.article.chapters[i].lines.splice(j, 0, {
                     content: "",
                     translation: "",
-                    reference: this.article.chapters[i].lines[j - 1].reference
+                    reference: this.article.chapters[i].lines[j - step].reference
                 })
                 current_chapter_index = i;
                 current_chapter_line_index = j;
@@ -506,7 +524,7 @@
                     .catch(function (error) {
                         console.log(error);
                         alert("打开文件错误");
-                        window.location.href="/";
+                        window.location.href = "/";
                     });
             },
             showArticles: function () {
