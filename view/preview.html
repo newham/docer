@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<!-- head -->
+{{template "HeadTemp" .}}
+<!-- end -->
+
+<body class="body-dark">
+
+
+<div id="docer">
+
+    <div class="navbar-fixed-top top-bar">
+        {{template "TitleTemp" .}}
+        <div class="tool-bar">
+            <a v-bind:href="'/edit/'+article.file" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-pencil"></span></a>
+        </div>
+    </div>
+    <div class="container content">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>${article.title}</h1>
+                <div v-for="(chapter,i) in article.chapters">
+                    <h2 v-if="chapter.level == 1">${++index +1}.${chapter.title}</h2>
+                    <h3 v-if="chapter.level == 2">${index+1}.${++level[index][0]}.${chapter.title}</h3>
+                    <h4 v-if="chapter.level == 3">${index+1}.${level[index][0]}.${++level[index][1]}.${chapter.title}</h4>
+                    <h5 v-if="chapter.level == 4">${index+1}.${level[index][0]}.${level[index][1]}.${++level[index][2]}.${chapter.title}</h5>
+                    <h6 v-if="chapter.level == 5">${index+1}.${level[index][0]}.${level[index][1]}.${level[index][2]}.${++level[index][3]}.${chapter.title}</h6>
+                    <p v-for="line in chapter.lines">${line.content}
+                        <label v-if="reference.id == line.reference" v-for="(reference,i) in article.references">[${i+1}]</label></p>
+                </div>
+                <h2>参考文献</h2>
+                <p v-for="(reference,i) in article.references">[${i+1}] ${reference.text}</p>
+            </div>
+
+
+        </div>
+
+    </div>
+
+</div>
+</body>
+
+<script src="/public/js/docer_preview.js"></script>
+<script>
+    vm.getArticle({{.filename}});
+    var index = -1;
+</script>
+
+</html>

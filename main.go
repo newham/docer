@@ -36,6 +36,7 @@ func main() {
 	server.Handler("/article/=name", article, "GET,DELETE")
 	server.Get("/download/=name", download)
 	server.Get("/edit/=name", edit)
+	server.Get("/preview/=name", preview)
 	server.Get("/folder", folder)
 	server.Post("/article", newArticle)
 	server.Post("/upload", upload)
@@ -45,6 +46,17 @@ func main() {
 	server.Get("/help", help)
 	server.Post("/register", register)
 	server.RunAt("8089")
+}
+
+func preview(ctx hamgo.Context) {
+	name := ctx.PathParam("name")
+	if !api.CheckFileIsExist(getArticle(ctx, name)) {
+		ctx.WriteString("404")
+		ctx.Text(404)
+		return
+	}
+	ctx.PutData("filename", name)
+	Html(ctx, "view/preview.html")
 }
 
 func register(ctx hamgo.Context) {
