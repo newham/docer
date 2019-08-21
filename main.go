@@ -12,11 +12,15 @@ import (
 	"github.com/newham/hamgo"
 )
 
+func init() {
+	api.ROOT_PATH = "articles"
+}
+
 func main() {
 	server := hamgo.New(hamgo.Properties{SessionMaxLifeTime: 3600 * 24})
 	server.AddFilter(func(ctx hamgo.Context) bool {
 		ctx.GetSession()
-		if ctx.GetSession().Get(SESSION_NAME) == nil {
+		if ctx.GetSession().Get(USER_NAME) == nil {
 			if ctx.Method() == http.MethodGet {
 				Html(ctx, "view/login.html")
 			} else {
@@ -25,7 +29,8 @@ func main() {
 			return false
 		}
 		return true
-	}).AddAnnoURL("/login", "POST").AddAnnoURL("/about", "GET").AddAnnoURL("/help", "GET")
+	}).AddAnnoURL("/login", "POST").AddAnnoURL("/about", "GET").AddAnnoURL("/help", "GET").AddAnnoURL("/register", "POST")
+
 	server.Static("public")
 	server.Get("/", index)
 	server.Handler("/article/=name", article, "GET,DELETE")
@@ -38,11 +43,40 @@ func main() {
 	server.Post("/logout", logout)
 	server.Get("/about", about)
 	server.Get("/help", help)
+	server.Post("/register", register)
 	server.RunAt("8089")
 }
 
+func register(ctx hamgo.Context) {
+	username := ctx.FormValue("username")
+	pwd := ctx.FormValue("pwd")
+	confirmPwd := ctx.FormValue("confirmPwd")
+	token := ctx.FormValue("token")
+
+	if username != "" && pwd != "" && pwd == confirmPwd && token == getToken() {
+		f, err := os.OpenFile("USER", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+		if err != nil {
+			hamgo.Log.Error(err.Error())
+			return
+		}
+		_, err = f.WriteString("\n" + getBase64(username, pwd))
+		if err != nil {
+			hamgo.Log.Error(err.Error())
+		}
+	}
+	ctx.Redirect("/")
+}
+
+func getToken() string {
+	b, err := ioutil.ReadFile("TOKEN")
+	if err != nil {
+		return ""
+	}
+	return string(b)
+}
+
 const (
-	SESSION_NAME = "username"
+	USER_NAME = "username"
 )
 
 func index(ctx hamgo.Context) {
@@ -60,7 +94,7 @@ func help(ctx hamgo.Context) {
 func download(ctx hamgo.Context) {
 	name := ctx.PathParam("name")
 
-	filepath := "articles/" + name
+	filepath := getArticle(ctx, name)
 	if !api.CheckFileIsExist(filepath) {
 		ctx.JSONString(404, "file not existed")
 		return
@@ -73,7 +107,7 @@ func download(ctx hamgo.Context) {
 func article(ctx hamgo.Context) {
 	name := ctx.PathParam("name")
 	if ctx.Method() == http.MethodGet {
-		b, err := ioutil.ReadFile("articles/" + name)
+		b, err := ioutil.ReadFile(getArticle(ctx, name))
 		if err != nil {
 			ctx.JSONFrom(404, newMsg(404, ""))
 			return
@@ -85,7 +119,7 @@ func article(ctx hamgo.Context) {
 		}
 		ctx.JSON(200, b)
 	} else if ctx.Method() == http.MethodDelete {
-		err := os.Remove("articles/" + name)
+		err := os.Remove(getArticle(ctx, name))
 		if err != nil {
 			ctx.JSONFrom(500, newMsg(500, err.Error()))
 			return
@@ -102,7 +136,7 @@ func edit(ctx hamgo.Context) {
 	}
 	name := ctx.PathParam("name")
 
-	if create != 1 && !api.CheckFileIsExist(api.ROOT_PATH+"/"+name) {
+	if create != 1 && !api.CheckFileIsExist(getArticle(ctx, name)) {
 		ctx.WriteString("404")
 		ctx.Text(404)
 		return
@@ -171,7 +205,7 @@ func newArticle(ctx hamgo.Context) {
 		return
 	}
 
-	filepath := api.ROOT_PATH + "/" + a.File
+	filepath := getArticle(ctx, a.File)
 
 	// if api.CheckFileIsExist(filepath) {
 	// 	ctx.JSONString(400, "file existed")
@@ -193,7 +227,7 @@ func newMsg(code int, msg string) map[string]interface{} {
 }
 
 func folder(ctx hamgo.Context) {
-	ctx.JSONFrom(200, api.GetFolder("/"))
+	ctx.JSONFrom(200, api.GetFolder(getHome(ctx)))
 }
 
 func upload(ctx hamgo.Context) {
@@ -204,7 +238,7 @@ func upload(ctx hamgo.Context) {
 		return
 	}
 	//2.create local file
-	f, err := os.OpenFile(api.ROOT_PATH+"/"+fileHeader.Filename, os.O_WRONLY|os.O_CREATE, 0666)
+	f, err := os.OpenFile(getArticle(ctx, fileHeader.Filename), os.O_WRONLY|os.O_CREATE, 0666)
 	defer f.Close()
 	if err != nil {
 		ctx.JSONString(500, err.Error())
@@ -220,18 +254,39 @@ func login(ctx hamgo.Context) {
 	pwd := ctx.FormValue("pwd")
 	b, err := ioutil.ReadFile("USER")
 	//println(string(b),api.Base64Encode(username+","+pwd))
-	if err == nil && b != nil && strings.Contains(string(b), api.Base64Encode(username+","+pwd)) {
-		ctx.GetSession().Set(SESSION_NAME, username)
+	if err == nil && b != nil && strings.Contains(string(b), getBase64(username, pwd)) {
+		if err = api.MkHome(username); err != nil {
+			hamgo.Log.Error(err.Error())
+			ctx.Redirect("/")
+			return
+		}
+		ctx.GetSession().Set(USER_NAME, username)
 	}
 	ctx.Redirect("/")
 }
 
 func logout(ctx hamgo.Context) {
-	//ctx.GetSession().Delete(SESSION_NAME)
+	//ctx.GetSession().Delete(USER_NAME)
 	ctx.DeleteSession()
 	ctx.JSONString(200, "")
 }
 
 func Html(ctx hamgo.Context, html string) {
 	ctx.HTML(html, "view/head.html", "view/title.html", "view/tool.html")
+}
+
+func getUsername(ctx hamgo.Context) string {
+	return ctx.GetSession().Get(USER_NAME).(string)
+}
+
+func getHome(ctx hamgo.Context) string {
+	return api.GetHome(getUsername(ctx))
+}
+
+func getArticle(ctx hamgo.Context, filename string) string {
+	return getHome(ctx) + filename
+}
+
+func getBase64(username, pwd string) string {
+	return api.Base64Encode(username + "," + pwd)
 }

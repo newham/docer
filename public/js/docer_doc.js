@@ -8,6 +8,7 @@ var vm = new Vue({
         newFilename: "新建文档.json",
         isEdited: "",
         content: "",
+        alert: "",
         article: {},
         folder: {}
     },
@@ -215,11 +216,22 @@ var vm = new Vue({
             })
                 .then(function (response) {
                     console.log(response);
-                    alert("保存成功！");
+                    // alert("保存成功！");
+                    vm.alert = "保存成功!"
+                    // $("#alert").show();
+                    // $("#alert").hide(2000);
+
+                    showAlert("#alert",0);
+
                 })
                 .catch(function (error) {
                     console.log(error);
-                    alert("保存失败,文件已经存在！");
+
+                    vm.alert = "保存失败!"
+                    // $("#alert").show();
+                    // $("#alert").hide(2000);
+
+                    showAlert("#alert",1);
                 });
         },
         getArticle: function (name) {

@@ -23,9 +23,7 @@ type File struct {
 	Editable bool   `json:"editable"`
 }
 
-const (
-	ROOT_PATH = "articles"
-)
+var ROOT_PATH = "articles"
 
 var EDITABLE_TYPE = []string{"txt", "md", "markdown", "h", "c", "cpp", "c++", "go", "xml", "json", "java", "conf", "ini", "css", "js", "sh", "py", "log"}
 
@@ -39,7 +37,7 @@ func initRoot() {
 }
 
 func GetFolder(path string) Folder {
-	dir, err := ioutil.ReadDir(ROOT_PATH + path)
+	dir, err := ioutil.ReadDir(path)
 	if err != nil {
 		initRoot()
 		return Folder{Path: "/"}
@@ -135,4 +133,16 @@ func isEditable(fileType string) bool {
 		}
 	}
 	return false
+}
+
+func MkHome(username string) error {
+	home := GetHome(username)
+	if CheckFileIsExist(home) {
+		return nil
+	}
+	return os.MkdirAll(home, 0666)
+}
+
+func GetHome(username string) string {
+	return ROOT_PATH + "/" + username + "/"
 }
