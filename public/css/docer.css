@@ -124,7 +124,7 @@ a {
     /*border: 1px solid #333;*/
     padding: 10px;
     text-align: center;
-    background: #fff;
+    /* background: #fff; */
     margin-bottom: 10px;
 }
 
@@ -137,6 +137,10 @@ a {
 
 .card a {
     color: black !important;
+}
+
+.card img {
+    width: 50%;
 }
 
 .content {
@@ -199,4 +203,13 @@ a {
 
 .size{
     color: green;
+}
+
+.line{
+    padding: 3px 10px;
+    /* background: #fff; */
+}
+
+.line:hover{
+    background: #e3e3e3;
 }

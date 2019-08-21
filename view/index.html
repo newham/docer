@@ -85,7 +85,23 @@
                     <h1>打开</h1>
                     <hr>
                 </div>
-                <div class="col-xs-3 col-md-2" v-for="file in folder.files">
+                <div class="col-md-12">
+                    <div v-for="file in folder.files" class="line">
+                        <a v-bind:href="'/edit/'+file.name" data-toggle="tooltip" v-bind:title="file.name">
+                            ${file.name}</a>
+                            <span class="pull-right">
+                                <span class="size">${file.size}</span>  
+                                ${file.modTime}
+                                <a v-on:click="delArticle(file.name)"><span
+                                        class="glyphicon glyphicon-trash"></span></a>
+                                |
+                                <a v-bind:href="'/download/'+file.name"><span
+                                        class="glyphicon glyphicon-cloud-download"></span></a>
+                            </span>
+                        
+                    </div>
+                </div>
+                <!-- <div class="col-xs-3 col-md-2" v-for="file in folder.files">
                     <div class="card">
 
                         <a v-bind:href="'/edit/'+file.name" data-toggle="tooltip" v-bind:title="file.name">
@@ -102,7 +118,7 @@
                                     class="glyphicon glyphicon-cloud-download"></span></a>
                         </div>
                     </div>
-                </div>
+                </div> -->
             </div>
 
         </div>
