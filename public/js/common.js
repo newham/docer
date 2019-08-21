@@ -19,6 +19,6 @@ function showAlert(name,t) {
     }
     if (alt.css("display") == 'none') {
         alt.slideDown();
-        alt.slideUp(400);
+        alt.slideUp(1000);
     }
 }

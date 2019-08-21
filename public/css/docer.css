@@ -125,6 +125,7 @@ a {
     padding: 10px;
     text-align: center;
     background: #fff;
+    margin-bottom: 10px;
 }
 
 .card:hover {
@@ -159,6 +160,7 @@ a {
     text-overflow: ellipsis; /*超出部分文字以...显示*/
     margin-top: 5px;
     font-weight: bold;
+    color: royalblue;
 }
 
 .btn-select {
