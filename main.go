@@ -25,7 +25,7 @@ func main() {
 			return false
 		}
 		return true
-	}).AddAnnoURL("/login", "POST")
+	}).AddAnnoURL("/login", "POST").AddAnnoURL("/about", "GET").AddAnnoURL("/help", "GET")
 	server.Static("public")
 	server.Get("/", index)
 	server.Handler("/article/=name", article, "GET,DELETE")
@@ -36,6 +36,8 @@ func main() {
 	server.Post("/upload", upload)
 	server.Post("/login", login)
 	server.Post("/logout", logout)
+	server.Get("/about", about)
+	server.Get("/help", help)
 	server.RunAt("8089")
 }
 
@@ -45,6 +47,14 @@ const (
 
 func index(ctx hamgo.Context) {
 	Html(ctx, "view/index.html")
+}
+
+func about(ctx hamgo.Context) {
+	Html(ctx, "view/about.html")
+}
+
+func help(ctx hamgo.Context) {
+	Html(ctx, "view/help.html")
 }
 
 func download(ctx hamgo.Context) {

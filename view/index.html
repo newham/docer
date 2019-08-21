@@ -54,7 +54,7 @@
         <div class="navbar-fixed-top top-bar">
             {{template "TitleTemp" .}}
         </div>
-        <div class="container content">
+        <div class="container content-dark">
             <div class="row">
                 <div class="col-md-12">
                     <h1>新建</h1>
@@ -64,8 +64,8 @@
                 <div class="col-xs-3 col-md-2">
                     <div class="card">
                         <a data-toggle="modal" data-target="#filenameModal">
-                            <img src="/public/file.png">
-                            <div>空白文档</div>
+                            <img src="/public/img/file.png">
+                            <div class="filename">空白文档</div>
                         </a>
                     </div>
                 </div>
@@ -73,8 +73,8 @@
                 <div class="col-xs-3 col-md-2">
                     <div class="card">
                         <a data-toggle="modal" data-target="#fileModal">
-                            <img src="/public/upload.png">
-                            <div>本地文档</div>
+                            <img src="/public/img/file_add.png">
+                            <div class="filename">上传文档</div>
                         </a>
                     </div>
                 </div>
@@ -89,12 +89,13 @@
                     <div class="card">
 
                         <a v-bind:href="'/edit/'+file.name" data-toggle="tooltip" v-bind:title="file.name">
-                            <img src="/public/file.png">
+                            <img src="/public/img/doc.png">
                             <div class="filename">${file.name}</div>
                             <div>${file.modTime}</div>
-                            <div>${file.size}</div>
+
                         </a>
                         <div>
+                            ${file.size}
                             <a v-on:click="delArticle(file.name)"><span class="glyphicon glyphicon-trash"></span></a>
                             |
                             <a v-bind:href="'/download/'+file.name"><span

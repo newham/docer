@@ -117,6 +117,7 @@ span {
 
 a {
     cursor: pointer !important;
+    border-radius: 0px !important;
 }
 
 .card {
@@ -138,6 +139,15 @@ a {
 .content {
     margin-bottom: 30px;
     margin-top: 105px;
+    background: #fff;
+    padding-bottom: 15px;
+}
+
+.content-dark{
+    margin-bottom: 30px;
+    margin-top: 105px;
+    background: #efefef;
+    padding-bottom: 15px;
 }
 
 .filename {
@@ -145,6 +155,7 @@ a {
     overflow: hidden; /*超出部分隐藏*/
     /*white-space: nowrap;!*不换行*!*/
     text-overflow: ellipsis; /*超出部分文字以...显示*/
+    margin-top: 5px;
 }
 
 .btn-select {
@@ -170,7 +181,7 @@ a {
     padding-right: 15px;
     overflow-y: scroll !important;
     min-height: 200px;
-    max-height: 700px
+    max-height: 700px;
 }
 
 .btn-primary {
