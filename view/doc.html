@@ -111,8 +111,8 @@
             <div class="row border-bottom" style="padding-bottom: 7px;">
                 <div class="col-md-12">
                     <!-- <h4>标题</h4> -->
-                    <input v-model="article.title" type="text" id="title" @keyup.down="downTitle()"
-                        class="form-control" placeholder="标题">
+                    <input v-model="article.title" type="text" id="title" @keyup.down="downTitle()" class="form-control"
+                        placeholder="标题">
                 </div>
                 <!--<div class="col-md-12">
         <div class="input-group input-group-sm p-3">
@@ -133,91 +133,90 @@
                 <h4>引用</h4>
             </div>
         </div> -->
-            <div class="row ">
-                <div class="col-xs-12 col-md-12">
-                    <div class="row chapter" v-for="(chapter,i) in article.chapters">
-                        <div class="col-xs-12 col-md-12">
-                            <div class="input-group input-group-sm p-2">
-                                <span class="input-group-addon ">
-                                    <select v-model="chapter.level">
-                                        <option v-bind:value="1">1</option>
-                                        <option v-bind:value="2">2</option>
-                                        <option v-bind:value="3">3</option>
-                                        <option v-bind:value="4">4</option>
-                                        <option v-bind:value="5">5</option>
-                                    </select>
-                                    级
-                                </span>
 
-                                <input v-model="chapter.title" placeholder="章节" type="text" v-bind:id="'c-'+i"
-                                    @keyup.enter="addChapter(i,1)" @keyup.up="upChapter(i)" @keyup.down="downChapter(i)"
-                                    @keyup.right="rightChapter(i)" class="form-control">
-                                <span class="input-group-btn">
-                                    <button v-on:click="addChapter(i,0)" class="btn btn-default">
-                                        <span class="glyphicon glyphicon-chevron-up"></span>
-                                    </button>
-                                    <button v-on:click="addChapter(i,1)" class="btn btn-default">
-                                        <span class="glyphicon glyphicon-chevron-down"></span>
-                                    </button>
-                                    <button v-on:click="delChapter(i)" class="btn btn-default">
-                                        <span class="glyphicon glyphicon-remove"></span>
-                                    </button>
-                                </span>
-                            </div>
-                        </div>
-                        <div class="col-xs-12 col-md-12">
-                            <div v-for="(line,j) in chapter.lines" class="input-group input-group-sm p-2">
-                                {{/*                    <span class="input-group-addon">${j+1}</span>*/}}
-                                <input v-model="line.content" placeholder="一行正文" type="text" @keyup.enter="addContent(i,j,1)"
-                                    class="form-control" @keyup.up="upContent(i,j)" @keyup.down="downContent(i,j)"
-                                    @keyup.46="delContent(i,j)" @keyup.right="focusReference(0)"
-                                    @keyup.left="focusChapter(i)" v-bind:id="'c-'+i+'-c-'+j">
-                                <!-- @keyup.46="delContent(i,j)" -->
-                                <span class="input-group-btn">
-                                    <span class="btn btn-default btn-select">
-                                        <select v-model="line.reference">
-                                            <option v-bind:value="-1">无</option>
-                                            <option v-bind:value="reference.id"
-                                                v-for="(reference,n) in article.references" data-toggle="tooltip"
-                                                v-bind:title="reference.text">[${n+1}]</option>
-                                        </select>
-                                    </span>
-                                    <button v-on:click="addContent(i,j,0)" class="btn btn-default">
-                                        <span class="glyphicon glyphicon-chevron-up"></span>
-                                    </button>
-                                    <button v-on:click="addContent(i,j,1)" class="btn btn-default">
-                                        <span class="glyphicon glyphicon-chevron-down"></span>
-                                    </button>
-                                    <button v-on:click="delContent(i,j)" class="btn btn-default">
-                                        <span class="glyphicon glyphicon-remove"></span>
-                                    </button>
-                                </span>
-                            </div>
-                        </div>
 
+            <div class="row chapter" v-for="(chapter,i) in article.chapters">
+                <div class="col-xs-12 col-md-3">
+                    <div class="input-group input-group-sm p-2">
+                        <span class="input-group-addon ">
+                            <select v-model="chapter.level">
+                                <option v-bind:value="1">1</option>
+                                <option v-bind:value="2">2</option>
+                                <option v-bind:value="3">3</option>
+                                <option v-bind:value="4">4</option>
+                                <option v-bind:value="5">5</option>
+                            </select>
+                            级
+                        </span>
+
+                        <input v-model="chapter.title" placeholder="章节" type="text" v-bind:id="'c-'+i"
+                            @keyup.enter="addChapter(i,1)" @keyup.up="upChapter(i)" @keyup.down="downChapter(i)"
+                            @keyup.right="rightChapter(i)" class="form-control">
+                        <span class="input-group-btn">
+                            <button v-on:click="addChapter(i,0)" class="btn btn-default">
+                                <span class="glyphicon glyphicon-chevron-up"></span>
+                            </button>
+                            <button v-on:click="addChapter(i,1)" class="btn btn-default">
+                                <span class="glyphicon glyphicon-chevron-down"></span>
+                            </button>
+                            <button v-on:click="delChapter(i)" class="btn btn-default">
+                                <span class="glyphicon glyphicon-remove"></span>
+                            </button>
+                        </span>
                     </div>
-                    <div class="row chapter">
-                        <div class="col-lg-12">
-                            <div>
-                                <div class="input-group input-group-sm p-2" v-for="(r,k) in article.references">
-                                    <span class="input-group-addon">[${k+1}]</span>
-                                    <input v-model="r.text" placeholder="引用" v-bind:id="'r-'+k" type="text" class="form-control"
-                                        @keyup.enter="addReference(k)" @keyup.down="focusReference(k+1)"
-                                        @keyup.up="focusReference(k-1)" @keyup.left="focusContent(0,0)">
-                                    <span class="input-group-btn">
-                                        <button v-on:click="addReference(k)" class="btn btn-default">
-                                            <span class="glyphicon glyphicon-plus"></span>
-                                        </button>
-                                        <button v-on:click="delReference(k)" class="btn btn-default">
-                                            <span class="glyphicon glyphicon-remove"></span>
-                                        </button>
-                                    </span>
-                                </div>
-                            </div>
+                </div>
+                <div class="col-xs-12 col-md-9">
+                    <div v-for="(line,j) in chapter.lines" class="input-group input-group-sm p-2">
+                        {{/*                    <span class="input-group-addon">${j+1}</span>*/}}
+                        <input v-model="line.content" placeholder="一行正文" type="text" @keyup.enter="addContent(i,j,1)"
+                            class="form-control" @keyup.up="upContent(i,j)" @keyup.down="downContent(i,j)"
+                            @keyup.46="delContent(i,j)" @keyup.right="focusReference(0)" @keyup.left="focusChapter(i)"
+                            v-bind:id="'c-'+i+'-c-'+j">
+                        <!-- @keyup.46="delContent(i,j)" -->
+                        <span class="input-group-btn">
+                            <span class="btn btn-default btn-select">
+                                <select v-model="line.reference">
+                                    <option v-bind:value="-1">无</option>
+                                    <option v-bind:value="reference.id" v-for="(reference,n) in article.references"
+                                        data-toggle="tooltip" v-bind:title="reference.text">[${n+1}]</option>
+                                </select>
+                            </span>
+                            <button v-on:click="addContent(i,j,0)" class="btn btn-default">
+                                <span class="glyphicon glyphicon-chevron-up"></span>
+                            </button>
+                            <button v-on:click="addContent(i,j,1)" class="btn btn-default">
+                                <span class="glyphicon glyphicon-chevron-down"></span>
+                            </button>
+                            <button v-on:click="delContent(i,j)" class="btn btn-default">
+                                <span class="glyphicon glyphicon-remove"></span>
+                            </button>
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+            <div class="row chapter">
+                <div class="col-md-9 col-md-offset-3">
+                    <div>
+                        <div class="input-group input-group-sm p-2" v-for="(r,k) in article.references">
+                            <span class="input-group-addon">[${k+1}]</span>
+                            <input v-model="r.text" placeholder="引用" v-bind:id="'r-'+k" type="text" class="form-control"
+                                @keyup.enter="addReference(k)" @keyup.down="focusReference(k+1)"
+                                @keyup.up="focusReference(k-1)" @keyup.left="focusContent(0,0)">
+                            <span class="input-group-btn">
+                                <button v-on:click="addReference(k)" class="btn btn-default">
+                                    <span class="glyphicon glyphicon-plus"></span>
+                                </button>
+                                <button v-on:click="delReference(k)" class="btn btn-default">
+                                    <span class="glyphicon glyphicon-remove"></span>
+                                </button>
+                            </span>
                         </div>
                     </div>
                 </div>
-                <!-- <div class="col-xs-12 col-md-3">
+            </div>
+        </div>
+        <!-- <div class="col-xs-12 col-md-3">
                 <div class="row">
                     <div class="col-lg-12">
                         <div data-spy="affix" data-offset-top="200" class="references">
@@ -240,8 +239,7 @@
                 </div>
             </div> -->
 
-            </div>
-        </div>
+
 
         <footer class="navbar-fixed-bottom text-right">
 
