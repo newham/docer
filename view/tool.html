@@ -1,37 +1,41 @@
 {{define "ToolTemp"}}
-    <div class="row tool-bar">
-        <div class="col-md-12 col-xs-12">
-            <a type="button" class="btn btn-default btn-sm" href="/">
-                <span class="glyphicon glyphicon-home"></span>
-            </a>
-            <button type="button" class="btn btn-default btn-sm" v-on:click="confirmArticle();">
-                <span class="glyphicon glyphicon-file"></span>
-            </button>
-            <button type="button" class="btn btn-default btn-sm" v-on:click="showArticles()">
-                <span class="glyphicon glyphicon-folder-open"></span>
-            </button>
-            <button type="button" class="btn btn-default btn-sm" v-on:click="postArticle()">
-                <span class="glyphicon glyphicon-floppy-disk"></span>
-            </button>
-            <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#saveModal">
-                <span class="glyphicon glyphicon-floppy-open"></span>
-            </button>
-            <a class="btn btn-default btn-sm" v-bind:href="'/preview/'+article.file">
-                <span class="glyphicon glyphicon-eye-open"></span>
-            </a>
-            <!-- <button type="button" class="btn btn-default btn-sm">
+<div class="row tool-bar">
+    <div class="col-md-12 col-xs-12">
+        
+        <a type="button" class="btn btn-default btn-sm" href="/">
+            <span class="glyphicon glyphicon-home"></span>
+        </a>
+        <button type="button" class="btn btn-default btn-sm" v-on:click="confirmArticle();">
+            <span class="glyphicon glyphicon-file"></span>
+        </button>
+        <button type="button" class="btn btn-default btn-sm" v-on:click="showArticles()">
+            <span class="glyphicon glyphicon-folder-open"></span>
+        </button>
+        <button type="button" class="btn btn-default btn-sm" v-on:click="postArticle()">
+            <span class="glyphicon glyphicon-floppy-disk"></span>
+        </button>
+        <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#saveModal">
+            <span class="glyphicon glyphicon-floppy-open"></span>
+        </button>
+        <a class="btn btn-default btn-sm" v-bind:href="'/preview/'+article.file">
+            <span class="glyphicon glyphicon-eye-open"></span>
+        </a>
+        <!-- <button type="button" class="btn btn-default btn-sm">
                 打开
             </button> -->
+        <button type="button" class="btn btn-default btn-sm" v-on:click="addReference(-1)">
+            引用
+        </button>
 
-        </div>
-
-        {{/*    <div class="col-md-3 col-xs-6">*/}}
-        {{/*        <div class="input-group input-group-sm ">*/}}
-        {{/*            <input type="text" class="form-control">*/}}
-        {{/*            <span class="input-group-btn ">*/}}
-        {{/*                    <button class="btn btn-primary" type="button">搜索</button>*/}}
-        {{/*                </span>*/}}
-        {{/*        </div>*/}}
-        {{/*    </div>*/}}
     </div>
+
+    {{/*    <div class="col-md-3 col-xs-6">*/}}
+    {{/*        <div class="input-group input-group-sm ">*/}}
+    {{/*            <input type="text" class="form-control">*/}}
+    {{/*            <span class="input-group-btn ">*/}}
+    {{/*                    <button class="btn btn-primary" type="button">搜索</button>*/}}
+    {{/*                </span>*/}}
+    {{/*        </div>*/}}
+    {{/*    </div>*/}}
+</div>
 {{end}}

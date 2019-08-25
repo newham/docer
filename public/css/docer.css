@@ -12,7 +12,7 @@
 
 .tool-bar {
     background: #efefef;
-    padding: 3px;
+    padding: 3px 15px;
     border-bottom: 1px solid #e3e3e3;
     border-top: 1px solid #e3e3e3;
 }
@@ -49,13 +49,13 @@ select:hover {
 }
 
 .body-dark {
-    background: #efefef;
+    background: #fff;
 }
 
 .title {
     /*border-bottom: 1px solid #e3e3e3;*/
     /*border-top: 1px solid #000;*/
-    background: #ffff;
+    background: #efefef;
     color: black;
     height: 60px;
     /*padding: 5px 50px 5px 15px;*/
@@ -94,7 +94,7 @@ span {
 }
 
 .logo {
-    height: 60px;
+    height: 100%;
     background: RoyalBlue;
     padding: 33px 5px 0px 3px;
 }
@@ -152,7 +152,7 @@ a {
 .content-dark{
     margin-bottom: 30px;
     margin-top: 105px;
-    background: #efefef;
+    background: #fff;
     padding-bottom: 15px;
 }
 

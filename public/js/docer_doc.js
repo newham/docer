@@ -43,6 +43,8 @@ var vm = new Vue({
                     }
                 ]
             }
+            //设置标题
+            document.title = name;
         },
         focusTitle: function (i) {
             document.getElementById("title").focus();
@@ -60,7 +62,7 @@ var vm = new Vue({
                 title: "",
                 level: 1,
                 lines: [
-                    {content: "", translation: "", reference: -1},
+                    { content: "", translation: "", reference: -1 },
                 ]
             });
             current_chapter_index = i;
@@ -163,9 +165,13 @@ var vm = new Vue({
             console.log("onfocusContent", i, j)
         },
         addReference: function (i) {
-            i++;
             console.log("add reference", i);
-            this.article.references.splice(i, 0, {id: (new Date()).valueOf(), text: ""})
+            if (i < 0) {
+                i = this.article.references.length;
+            } else {
+                i++;
+            }
+            this.article.references.push({ id: (new Date()).valueOf(), text: "" });
             //focus
             current_reference_index = i;
             add_type = 3;
@@ -210,9 +216,9 @@ var vm = new Vue({
             // return
             axios.post('/article', this.article, {
                 headers:
-                    {
-                        'Content-Type': 'application/json'
-                    }
+                {
+                    'Content-Type': 'application/json'
+                }
             })
                 .then(function (response) {
                     console.log(response);
@@ -221,7 +227,7 @@ var vm = new Vue({
                     // $("#alert").show();
                     // $("#alert").hide(2000);
 
-                    showAlert("#alert",0);
+                    showAlert("#alert", 0);
 
                 })
                 .catch(function (error) {
@@ -231,7 +237,7 @@ var vm = new Vue({
                     // $("#alert").show();
                     // $("#alert").hide(2000);
 
-                    showAlert("#alert",1);
+                    showAlert("#alert", 1);
                 });
         },
         getArticle: function (name) {
