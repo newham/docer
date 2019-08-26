@@ -1,41 +1,50 @@
 {{define "ToolTemp"}}
-<div class="row tool-bar">
-    <div class="col-md-12 col-xs-12">
-        
-        <a type="button" class="btn btn-default btn-sm" href="/">
-            <span class="glyphicon glyphicon-home"></span>
-        </a>
-        <button type="button" class="btn btn-default btn-sm" v-on:click="confirmArticle();">
-            <span class="glyphicon glyphicon-file"></span>
-        </button>
-        <button type="button" class="btn btn-default btn-sm" v-on:click="showArticles()">
-            <span class="glyphicon glyphicon-folder-open"></span>
-        </button>
-        <button type="button" class="btn btn-default btn-sm" v-on:click="postArticle()">
-            <span class="glyphicon glyphicon-floppy-disk"></span>
-        </button>
-        <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#saveModal">
-            <span class="glyphicon glyphicon-floppy-open"></span>
-        </button>
-        <a class="btn btn-default btn-sm" v-bind:href="'/preview/'+article.file">
-            <span class="glyphicon glyphicon-eye-open"></span>
-        </a>
-        <!-- <button type="button" class="btn btn-default btn-sm">
-                打开
-            </button> -->
-        <button type="button" class="btn btn-default btn-sm" v-on:click="addReference(-1)">
-            引用
-        </button>
+<div class="navbar-fixed-top top-bar">
+        <div class="title">
+            <div class="logo pull-left">
+                <a href="/">
+                    Docer
+                </a>
+            </div>
+            <div class="tool-bar">
+                <!-- <a href="/help" class="btn btn-default btn-sm" style="margin-left: 5px;">帮助</a>
+                <a href="/about" class="btn btn-default btn-sm">关于</a> -->
 
+                <!-- <a class="btn btn-default btn-sm" href="/" style="margin-left: 5px;">
+                    <span class="glyphicon glyphicon-home"></span>
+                </a> -->
+                <button type="button" style="margin-left: 5px;" class="btn btn-default btn-sm" v-on:click="confirmArticle();">
+                    <span class="glyphicon glyphicon-file"></span> 新建
+                </button>
+                <button type="button" class="btn btn-default btn-sm" v-on:click="showArticles()">
+                    <span class="glyphicon glyphicon-folder-open"></span> 打开
+                </button>
+                <button type="button" class="btn btn-default btn-sm" v-on:click="postArticle()">
+                    <span class="glyphicon glyphicon-floppy-disk"></span> 保存
+                </button>
+                <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#saveModal">
+                    <span class="glyphicon glyphicon-floppy-open"></span> 另存为
+                </button>
+                <a class="btn btn-default btn-sm" v-bind:href="'/preview/'+article.file">
+                    <span class="glyphicon glyphicon-eye-open"></span> 预览
+                </a>
+                <!-- <button type="button" class="btn btn-default btn-sm">
+                                    打开
+                                </button> -->
+                <button type="button" class="btn btn-default btn-sm" v-on:click="addReference(-1)">
+                    <span class="glyphicon glyphicon-link"></span> 引用
+                </button>
+
+
+            </div>
+
+        </div>
+
+        <div class="alert" id="alert" style="display: none;margin: 0px;">
+            <a href="#" class="close" data-dismiss="alert">
+                &times;
+            </a>
+            <strong>${alert}</strong>
+        </div>
     </div>
-
-    {{/*    <div class="col-md-3 col-xs-6">*/}}
-    {{/*        <div class="input-group input-group-sm ">*/}}
-    {{/*            <input type="text" class="form-control">*/}}
-    {{/*            <span class="input-group-btn ">*/}}
-    {{/*                    <button class="btn btn-primary" type="button">搜索</button>*/}}
-    {{/*                </span>*/}}
-    {{/*        </div>*/}}
-    {{/*    </div>*/}}
-</div>
 {{end}}
