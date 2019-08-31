@@ -3,3 +3,4 @@ articles/
 *.log
 docer
 docer.exe
+.DS_*

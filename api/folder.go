@@ -140,7 +140,7 @@ func MkHome(username string) error {
 	if CheckFileIsExist(home) {
 		return nil
 	}
-	return os.MkdirAll(home, 0666)
+	return os.MkdirAll(home, 0777)
 }
 
 func GetHome(username string) string {
