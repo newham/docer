@@ -136,7 +136,8 @@
 
                         <input v-model="chapter.title" placeholder="章节" type="text" v-bind:id="'c-'+i"
                             @keyup.enter="addChapter(i,1)" @keyup.up="upChapter(i)" @keyup.down="downChapter(i)"
-                            @keyup.right="rightChapter(i)" class="form-control">
+                            class="form-control">
+                        <!-- @keyup.right="rightChapter(i)"  -->
                         <span class="input-group-btn">
                             <button v-on:click="addChapter(i,0)" class="btn btn-default">
                                 <span class="glyphicon glyphicon-chevron-up"></span>
@@ -155,8 +156,8 @@
                         {{/*                    <span class="input-group-addon">${j+1}</span>*/}}
                         <input v-model="line.content" placeholder="一行正文" type="text" @keyup.enter="addContent(i,j,1)"
                             class="form-control" @keyup.up="upContent(i,j)" @keyup.down="downContent(i,j)"
-                            @keyup.46="delContent(i,j)" @keyup.right="focusReference(0)" @keyup.left="focusChapter(i)"
-                            v-bind:id="'c-'+i+'-c-'+j">
+                            @keyup.46="delContent(i,j)" v-bind:id="'c-'+i+'-c-'+j">
+                        <!-- @keyup.right="focusReference(0)" @keyup.left="focusChapter(i)" -->
                         <!-- @keyup.46="delContent(i,j)" -->
                         <span class="input-group-btn">
                             <span class="btn btn-default btn-select">
@@ -187,7 +188,8 @@
                             <span class="input-group-addon">[${k+1}]</span>
                             <input v-model="r.text" placeholder="引用" v-bind:id="'r-'+k" type="text" class="form-control"
                                 @keyup.enter="addReference(k)" @keyup.down="focusReference(k+1)"
-                                @keyup.up="focusReference(k-1)" @keyup.left="focusContent(0,0)">
+                                @keyup.up="focusReference(k-1)">
+                            <!-- @keyup.left="focusContent(0,0)" -->
                             <span class="input-group-btn">
                                 <button v-on:click="addReference(k)" class="btn btn-default">
                                     <span class="glyphicon glyphicon-plus"></span>
